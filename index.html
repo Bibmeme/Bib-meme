@@ -6,7 +6,6 @@
   <meta name="color-scheme" content="light dark">
   <title>Bibmeme</title>
 
-  <!-- определяем, запущено ли это как приложение (APK / App) -->
   <script>
     (function () {
       var ua = navigator.userAgent || '';
@@ -39,6 +38,7 @@
       --c1: #7c5cff;
       --c2: #ff5c9d;
       --c3: #ffb85c;
+      --err: #e0457b;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -48,10 +48,12 @@
         --muted: #9a97c0;
         --card: rgba(255, 255, 255, 0.08);
         --border: rgba(255, 255, 255, 0.12);
+        --err: #ff7aa2;
       }
     }
 
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
 
     body {
       margin: 0;
@@ -100,12 +102,12 @@
         var(--bg);
     }
 
-    .is-app .features li {
+    .is-app .features li,
+    .is-app .panel {
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
 
-    /* общий градиентный заголовок */
     .title {
       margin: 0;
       font-weight: 800;
@@ -118,20 +120,129 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* ---------- первый экран ---------- */
-    .intro {
+    /* ---------- общие экраны ---------- */
+    .screen {
       position: relative;
       z-index: 1;
-      flex: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 28px 20px 32px;
-      transition: opacity 0.6s ease;
+      width: 100%;
     }
 
-    .intro.hide { opacity: 0; pointer-events: none; }
+    .page {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    label:first-of-type { margin-top: 0; }
+
+    input {
+      display: block;
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--c1);
+    }
+
+    .hint {
+      margin: 6px 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+
+    .error {
+      margin: 12px 0 0;
+      font-size: 0.92rem;
+      color: var(--err);
+      min-height: 1.2em;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px 20px;
+      border: 0;
+      border-radius: 16px;
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(124, 92, 255, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .link {
+      display: block;
+      margin: 14px auto 0;
+      background: none;
+      border: 0;
+      color: var(--c1);
+      font: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .switch {
+      margin: 14px 0 0;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .switch .link {
+      display: inline;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ---------- первый экран ---------- */
+    .intro {
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 28px 20px 32px;
+      display: flex;
+    }
 
     .intro-title {
       font-size: clamp(2.2rem, 10vw, 3.5rem);
@@ -164,59 +275,32 @@
       animation: rise 1s ease 1.6s both;
     }
 
-    .continue {
-      width: 100%;
+    .intro .btn {
       max-width: 420px;
-      padding: 16px 20px;
-      border: 0;
-      border-radius: 16px;
-      font: inherit;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #fff;
-      background: linear-gradient(135deg, var(--c1), var(--c2));
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(124, 92, 255, 0.3);
       animation: riseBottom 0.9s ease 2.8s both;
     }
 
-    .continue:disabled {
-      opacity: 0.6;
-      cursor: default;
-      box-shadow: none;
+    /* ---------- главный экран ---------- */
+    .home {
+      max-width: 900px;
     }
 
-    /* ---------- второй экран ---------- */
-    .home {
-      position: relative;
-      z-index: 1;
-      display: none;
-      flex: 1;
-      padding: 24px 16px;
+    .home .title {
+      font-size: clamp(3rem, 14vw, 6rem);
       text-align: center;
     }
 
-    .home.show {
-      display: block;
-      animation: appear 0.8s ease both;
-    }
-
-    .home h1 {
-      font-size: clamp(3rem, 14vw, 6rem);
-    }
-
-    p.sub {
+    .sub {
       margin: 12px 0 0;
       font-size: 1.1rem;
       color: var(--muted);
+      text-align: center;
     }
 
     .features {
-      position: relative;
-      z-index: 1;
       display: grid;
       gap: 12px;
-      margin: 64px 16px 16px;
+      margin: 48px 0 0;
       padding: 0;
       list-style: none;
     }
@@ -232,7 +316,6 @@
       font-size: 0.98rem;
       line-height: 1.35;
       font-weight: 500;
-      text-align: left;
     }
 
     .icon {
@@ -256,32 +339,29 @@
       stroke-linejoin: round;
     }
 
+    .home .btn { margin-top: 48px; }
+
+    @media (min-width: 700px) {
+      .features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .features li:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+      }
+    }
+
     /* ---------- анимации ---------- */
     @keyframes appear {
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-
     @keyframes rise {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes riseBottom {
       from { opacity: 0; transform: translateY(60px); }
       to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (min-width: 700px) {
-      .features {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 900px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .features li:last-child:nth-child(odd) {
-        grid-column: 1 / -1;
-      }
     }
   </style>
 </head>
@@ -292,7 +372,7 @@
   <canvas id="smoke"></canvas>
 
   <!-- первый экран -->
-  <section class="intro" id="intro">
+  <section class="screen intro" id="intro">
     <h1 class="title intro-title">Bibmeme</h1>
 
     <div class="intro-center">
@@ -300,13 +380,13 @@
       <p class="welcome-desc">в Bibmeme вы можете сразу залетать в топ, смотреть тренды, общаться, лайкать, комментировать и найти друзей!</p>
     </div>
 
-    <button class="continue" id="continueBtn" disabled>
+    <button class="btn" id="continueBtn" disabled>
       Продолжить через <span id="count">5</span> секунд
     </button>
   </section>
 
-  <!-- второй экран -->
-  <main class="home" id="home">
+  <!-- главный экран: карточки внизу, потом кнопка входа -->
+  <main class="screen page home" id="home" hidden>
     <h1 class="title">Bibmeme</h1>
     <p class="sub">Добро пожаловать в Bibmeme</p>
 
@@ -359,210 +439,466 @@
         <span>Сервера под контролем и безопасные</span>
       </li>
     </ul>
+
+    <button class="btn" id="startBtn">Начать вход</button>
+    <p class="switch">Уже есть аккаунт? <button class="link" data-go="login">Войти</button></p>
   </main>
 
-  <script>
-    /* ---------- первый экран: отсчёт и переход ---------- */
-    (function () {
-      const intro = document.getElementById('intro');
-      const home = document.getElementById('home');
-      const btn = document.getElementById('continueBtn');
-      const countEl = document.getElementById('count');
-      let seconds = 5;
+  <!-- регистрация, шаг 1: имя, юзернейм, пароль -->
+  <section class="screen page" id="reg1" hidden>
+    <form class="panel" id="regForm" novalidate>
+      <h2>Как вас зовут?</h2>
 
-      // отсчёт начинается, когда кнопка появилась (примерно через 2.8 секунды)
+      <label>Имя
+        <input id="firstName" autocomplete="given-name">
+      </label>
+
+      <label>Фамилия (необязательно)
+        <input id="lastName" autocomplete="family-name">
+      </label>
+
+      <label>Придумайте UserName (латиница)
+        <input id="username" autocomplete="username" autocapitalize="off">
+      </label>
+      <p class="hint" id="userHint"></p>
+
+      <label>Пароль
+        <input id="password" type="password" autocomplete="new-password">
+      </label>
+
+      <label>Повторите пароль
+        <input id="repeat" type="password" autocomplete="new-password">
+      </label>
+
+      <p class="error" id="regError"></p>
+      <button class="btn" type="submit">Далее</button>
+      <button class="link" type="button" data-go="home">Назад</button>
+    </form>
+  </section>
+
+  <!-- регистрация, шаг 2: возраст -->
+  <section class="screen page" id="reg2" hidden>
+    <form class="panel" id="ageForm" novalidate>
+      <h2>Сколько вам лет?</h2>
+
+      <label>Дата рождения
+        <input id="birth" placeholder="ДД.ММ.ГГГГ" inputmode="numeric" maxlength="10">
+      </label>
+
+      <p class="error" id="ageError"></p>
+      <button class="btn" type="submit">Далее</button>
+      <button class="link" type="button" data-go="reg1">Назад</button>
+    </form>
+  </section>
+
+  <!-- экран блокировки для тех, кому нет 6 лет -->
+  <section class="screen page" id="blocked" hidden>
+    <div class="panel">
+      <h2>Регистрация закрыта</h2>
+      <p id="blockedText" style="margin:0;line-height:1.5;color:var(--muted)"></p>
+      <button class="btn" type="button" data-go="home">Назад</button>
+    </div>
+  </section>
+
+  <!-- вход -->
+  <section class="screen page" id="login" hidden>
+    <form class="panel" id="loginForm" novalidate>
+      <h2>Вход</h2>
+
+      <label>UserName
+        <input id="loginUser" autocomplete="username" autocapitalize="off">
+      </label>
+
+      <label>Пароль
+        <input id="loginPass" type="password" autocomplete="current-password">
+      </label>
+
+      <p class="error" id="loginError"></p>
+      <button class="btn" type="submit">Войти</button>
+      <p class="switch">Нет аккаунта? <button class="link" type="button" data-go="reg1">Начать вход</button></p>
+      <button class="link" type="button" data-go="home">Назад</button>
+    </form>
+  </section>
+
+  <!-- лента после входа или регистрации -->
+  <section class="screen page" id="feed" hidden>
+    <div class="panel">
+      <h2 id="greet">Привет!</h2>
+      <p style="margin:0 0 16px;color:var(--muted)">Лента пока пустая.</p>
+      <button class="btn" type="button" id="logoutBtn">Выйти</button>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const KEY = 'bibmeme_data';
+
+      /* ---------- хранение: все аккаунты в одном объекте ---------- */
+      function load() {
+        try {
+          return JSON.parse(localStorage.getItem(KEY)) || { users: {}, session: null };
+        } catch (e) {
+          return { users: {}, session: null };
+        }
+      }
+      let data = load();
+      function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
+
+      /* ---------- переключение экранов ---------- */
+      function show(id) {
+        document.querySelectorAll('.screen').forEach((s) => { s.hidden = s.id !== id; });
+        window.scrollTo(0, 0);
+      }
+      document.querySelectorAll('[data-go]').forEach((b) => {
+        b.addEventListener('click', () => show(b.dataset.go));
+      });
+
+      /* ---------- интро ---------- */
+      let seconds = 5;
       setTimeout(function () {
-        const timer = setInterval(function () {
+        const t = setInterval(function () {
           seconds--;
-          countEl.textContent = seconds;
+          $('count').textContent = seconds;
           if (seconds <= 0) {
-            clearInterval(timer);
-            btn.textContent = 'Продолжить';
-            btn.disabled = false;
+            clearInterval(t);
+            $('continueBtn').textContent = 'Продолжить';
+            $('continueBtn').disabled = false;
           }
         }, 1000);
       }, 2800);
 
-      btn.addEventListener('click', function () {
-        if (btn.disabled) return;
-        intro.classList.add('hide');
-        setTimeout(function () {
-          intro.style.display = 'none';
-          home.classList.add('show');
-        }, 600);
+      $('continueBtn').addEventListener('click', function () {
+        if (!this.disabled) show('home');
       });
-    })();
+      $('startBtn').addEventListener('click', () => show('reg1'));
 
-    /* ---------- живой фон: только в приложении ---------- */
-    if (document.documentElement.classList.contains('is-app')) {
-      (function () {
-        const canvas = document.getElementById('smoke');
-        const ctx = canvas.getContext('2d');
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let w, h, dpr;
-
-        function resize() {
-          dpr = Math.min(window.devicePixelRatio || 1, 2);
-          w = window.innerWidth;
-          h = window.innerHeight;
-          canvas.width = w * dpr;
-          canvas.height = h * dpr;
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      /* ---------- юзернейм: транслит и проверка занятости ---------- */
+      const T = { а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'ts',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya' };
+      function toLatin(s) {
+        return s.toLowerCase().split('').map((c) => (T[c] !== undefined ? T[c] : c)).join('').replace(/[^a-z0-9_]/g, '');
+      }
+      function suggest(base) {
+        if (!base) return '';
+        if (!data.users[base]) return base;
+        for (let i = 2; ; i++) {
+          const c = base + i;
+          if (!data.users[c]) return c;
         }
-        resize();
-        window.addEventListener('resize', resize);
-
-        const sprite = document.createElement('canvas');
-        sprite.width = sprite.height = 128;
-        const sctx = sprite.getContext('2d');
-        const g = sctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-        g.addColorStop(0, 'rgba(255,255,255,1)');
-        g.addColorStop(0.4, 'rgba(255,255,255,0.45)');
-        g.addColorStop(1, 'rgba(255,255,255,0)');
-        sctx.fillStyle = g;
-        sctx.fillRect(0, 0, 128, 128);
-
-        const particles = [];
-        const waves = [];
-        const MAX = 350;
-        const BAND = 60;
-
-        function spawn(x, y, power) {
-          if (reduceMotion) return;
-          const angle = Math.random() * Math.PI * 2;
-          const speed = Math.random() * power;
-          particles.push({
-            x: x + (Math.random() - 0.5) * 10,
-            y: y + (Math.random() - 0.5) * 10,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed - 0.3,
-            size: 40 + Math.random() * 50,
-            grow: 0.6 + Math.random() * 0.8,
-            rot: Math.random() * Math.PI * 2,
-            vr: (Math.random() - 0.5) * 0.02,
-            life: 0,
-            maxLife: 70 + Math.random() * 60,
-            alpha: 0.35 + Math.random() * 0.25
-          });
-          if (particles.length > MAX) particles.shift();
+      }
+      function updateHint() {
+        const u = $('username').value.trim().toLowerCase();
+        const first = $('firstName').value.trim();
+        const last = $('lastName').value.trim();
+        let text = '';
+        if (u) {
+          text = data.users[u] ? 'Занято. Свободно: ' + suggest(u) : 'Юзернейм свободен';
+        } else if (first) {
+          const base = toLatin(first) + (last ? '_' + toLatin(last) : '');
+          if (base) text = 'Например, свободно: ' + suggest(base);
         }
+        $('userHint').textContent = text;
+      }
+      ['firstName', 'lastName', 'username'].forEach((id) => $(id).addEventListener('input', updateHint));
 
-        function burst(x, y) {
-          for (let i = 0; i < 28; i++) spawn(x, y, 3.2);
+      /* ---------- возраст ---------- */
+      function parseIso(s) {
+        const [y, m, d] = s.split('-').map(Number);
+        return new Date(y, m - 1, d);
+      }
+      function ageOn(birth) {
+        const t = new Date();
+        t.setHours(0, 0, 0, 0);
+        let a = t.getFullYear() - birth.getFullYear();
+        const dm = t.getMonth() - birth.getMonth();
+        if (dm < 0 || (dm === 0 && t.getDate() < birth.getDate())) a--;
+        return a;
+      }
+      function unlockDate(birth) {
+        return new Date(birth.getFullYear() + 6, birth.getMonth(), birth.getDate()).toLocaleDateString('ru-RU');
+      }
+      function blockedMessage(birth) {
+        return 'Вам пока нет 6 лет, поэтому регистрация закрыта. Дата рождения сохранена. Регистрация откроется ' +
+          unlockDate(birth) + ', когда вам исполнится 6 лет.';
+      }
+
+      /* ---------- регистрация, шаг 1 ---------- */
+      let draft = null;
+
+      $('regForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const err = $('regError');
+        err.textContent = '';
+
+        const firstName = $('firstName').value.trim();
+        const lastName = $('lastName').value.trim();
+        const username = $('username').value.trim().toLowerCase();
+        const password = $('password').value;
+        const repeat = $('repeat').value;
+
+        if (!firstName) return (err.textContent = 'Введите имя');
+        if (!/^[a-z0-9_]{3,20}$/.test(username)) return (err.textContent = 'Юзернейм: латиница, цифры или _, от 3 до 20 символов');
+        if (data.users[username]) return (err.textContent = 'Этот юзернейм занят');
+        if (password.length < 6) return (err.textContent = 'Пароль минимум 6 символов');
+        if (password !== repeat) return (err.textContent = 'Пароли не совпадают');
+
+        draft = { firstName, lastName, username, password };
+        $('birth').value = '';
+        $('ageError').textContent = '';
+        show('reg2');
+      });
+
+      /* ---------- регистрация, шаг 2 ---------- */
+      $('ageForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const err = $('ageError');
+        err.textContent = '';
+
+        if (!draft) return show('reg1');
+
+        const m = $('birth').value.trim().match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+        if (!m) return (err.textContent = 'Введите дату в формате ДД.ММ.ГГГГ');
+
+        const d = +m[1], mo = +m[2], y = +m[3];
+        const birth = new Date(y, mo - 1, d);
+        if (birth.getFullYear() !== y || birth.getMonth() !== mo - 1 || birth.getDate() !== d) {
+          return (err.textContent = 'Такой даты не существует');
         }
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (birth > today) return (err.textContent = 'Дата не может быть в будущем');
 
-        function wave(x, y, maxR) {
-          if (reduceMotion) return;
-          waves.push({
-            x: x,
-            y: y,
-            r: 10,
-            maxR: maxR || Math.max(w, h) * 0.6,
-            speed: 9,
-            life: 0
-          });
+        if (data.users[draft.username]) return (err.textContent = 'Этот юзернейм уже занят');
+
+                      const iso = y + '-' + String(mo).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      const user = {
+        firstName: draft.firstName,
+        lastName: draft.lastName,
+        password: draft.password,
+        birth: iso,
+        blocked: false
+      };
+
+      if (ageOn(birth) < 6) {
+        user.blocked = true;
+        data.users[draft.username] = user;
+        save();
+        $('blockedText').textContent = blockedMessage(birth);
+        return show('blocked');
+      }
+
+      data.users[draft.username] = user;
+      data.session = draft.username;
+      save();
+      draft = null;
+      $('greet').textContent = 'Привет, ' + user.firstName + '!';
+      show('feed');
+    });
+
+    /* ---------- вход ---------- */
+    $('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const err = $('loginError');
+      err.textContent = '';
+
+      const username = $('loginUser').value.trim().toLowerCase();
+      const password = $('loginPass').value;
+      const u = data.users[username];
+
+      if (!u || u.password !== password) return (err.textContent = 'Неверный юзернейм или пароль');
+
+      if (u.blocked) {
+        const birth = parseIso(u.birth);
+        if (ageOn(birth) >= 6) {
+          u.blocked = false;
+          save();
+        } else {
+          $('blockedText').textContent = blockedMessage(birth);
+          return show('blocked');
         }
+      }
 
-        let lastX = null, lastY = null;
+      data.session = username;
+      save();
+      $('greet').textContent = 'Привет, ' + u.firstName + '!';
+      $('loginUser').value = '';
+      $('loginPass').value = '';
+      show('feed');
+    });
 
-        window.addEventListener('pointermove', (e) => {
-          if (e.pointerType === 'touch') return;
-          if (lastX !== null) {
-            const dist = Math.hypot(e.clientX - lastX, e.clientY - lastY);
-            const n = Math.min(4, Math.ceil(dist / 14));
-            for (let i = 0; i < n; i++) spawn(e.clientX, e.clientY, 0.8);
-          }
-          lastX = e.clientX;
-          lastY = e.clientY;
+    /* ---------- выход ---------- */
+    $('logoutBtn').addEventListener('click', function () {
+      data.session = null;
+      save();
+      show('home');
+    });
+
+    show('intro');
+  })();
+
+  /* ---------- живой фон: только в приложении ---------- */
+  if (document.documentElement.classList.contains('is-app')) {
+    (function () {
+      const canvas = document.getElementById('smoke');
+      const ctx = canvas.getContext('2d');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let w, h, dpr;
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      const sprite = document.createElement('canvas');
+      sprite.width = sprite.height = 128;
+      const sctx = sprite.getContext('2d');
+      const g = sctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      g.addColorStop(0, 'rgba(255,255,255,1)');
+      g.addColorStop(0.4, 'rgba(255,255,255,0.45)');
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      sctx.fillStyle = g;
+      sctx.fillRect(0, 0, 128, 128);
+
+      const particles = [];
+      const waves = [];
+      const MAX = 350;
+      const BAND = 60;
+
+      function spawn(x, y, power) {
+        if (reduceMotion) return;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * power;
+        particles.push({
+          x: x + (Math.random() - 0.5) * 10,
+          y: y + (Math.random() - 0.5) * 10,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 0.3,
+          size: 40 + Math.random() * 50,
+          grow: 0.6 + Math.random() * 0.8,
+          rot: Math.random() * Math.PI * 2,
+          vr: (Math.random() - 0.5) * 0.02,
+          life: 0,
+          maxLife: 70 + Math.random() * 60,
+          alpha: 0.35 + Math.random() * 0.25
         });
+        if (particles.length > MAX) particles.shift();
+      }
 
-        window.addEventListener('pointerdown', (e) => {
-          const el = e.target.closest && e.target.closest('button, a, [data-wave]');
-          let x = e.clientX, y = e.clientY;
-          if (el) {
-            const r = el.getBoundingClientRect();
-            x = r.left + r.width / 2;
-            y = r.top + r.height / 2;
-          }
-          burst(x, y);
-          wave(x, y);
-        });
+      function burst(x, y) {
+        for (let i = 0; i < 28; i++) spawn(x, y, 3.2);
+      }
 
-        window.addEventListener('touchmove', (e) => {
-          const t = e.touches[0];
-          spawn(t.clientX, t.clientY, 1);
-          spawn(t.clientX, t.clientY, 1);
-        }, { passive: true });
+      function wave(x, y, maxR) {
+        if (reduceMotion) return;
+        waves.push({ x: x, y: y, r: 10, maxR: maxR || Math.max(w, h) * 0.6, speed: 9, life: 0 });
+      }
 
-        function frame() {
-          ctx.clearRect(0, 0, w, h);
+      let lastX = null, lastY = null;
 
-          for (let i = waves.length - 1; i >= 0; i--) {
-            const wv = waves[i];
-            wv.r += wv.speed;
-            wv.speed *= 0.985;
-            wv.life = wv.r / wv.maxR;
-            if (wv.life >= 1) waves.splice(i, 1);
-          }
+      window.addEventListener('pointermove', (e) => {
+        if (e.pointerType === 'touch') return;
+        if (lastX !== null) {
+          const dist = Math.hypot(e.clientX - lastX, e.clientY - lastY);
+          const n = Math.min(4, Math.ceil(dist / 14));
+          for (let i = 0; i < n; i++) spawn(e.clientX, e.clientY, 0.8);
+        }
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
 
-          for (let i = particles.length - 1; i >= 0; i--) {
-            const p = particles[i];
-            p.life++;
-            if (p.life > p.maxLife) { particles.splice(i, 1); continue; }
+      window.addEventListener('pointerdown', (e) => {
+        const el = e.target.closest && e.target.closest('button, a, [data-wave]');
+        let x = e.clientX, y = e.clientY;
+        if (el) {
+          const r = el.getBoundingClientRect();
+          x = r.left + r.width / 2;
+          y = r.top + r.height / 2;
+        }
+        burst(x, y);
+        wave(x, y);
+      });
 
-            for (let k = 0; k < waves.length; k++) {
-              const wv = waves[k];
-              const dx = p.x - wv.x;
-              const dy = p.y - wv.y;
-              const d = Math.hypot(dx, dy) || 1;
-              const off = Math.abs(d - wv.r);
-              if (off < BAND) {
-                const force = (1 - off / BAND) * (1 - wv.life) * 2.2;
-                p.vx += (dx / d) * force;
-                p.vy += (dy / d) * force;
-              }
-            }
+      window.addEventListener('touchmove', (e) => {
+        const t = e.touches[0];
+        spawn(t.clientX, t.clientY, 1);
+        spawn(t.clientX, t.clientY, 1);
+      }, { passive: true });
 
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vx *= 0.96;
-            p.vy = p.vy * 0.96 - 0.01;
-            p.size += p.grow;
-            p.rot += p.vr;
+      function frame() {
+        ctx.clearRect(0, 0, w, h);
 
-            const t = p.life / p.maxLife;
-            const a = p.alpha * (1 - t) * Math.min(1, p.life / 8);
+        for (let i = waves.length - 1; i >= 0; i--) {
+          const wv = waves[i];
+          wv.r += wv.speed;
+          wv.speed *= 0.985;
+          wv.life = wv.r / wv.maxR;
+          if (wv.life >= 1) waves.splice(i, 1);
+        }
 
-            ctx.save();
-            ctx.globalAlpha = a;
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rot);
-            ctx.drawImage(sprite, -p.size / 2, -p.size / 2, p.size, p.size);
-            ctx.restore();
-          }
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.life++;
+          if (p.life > p.maxLife) { particles.splice(i, 1); continue; }
 
           for (let k = 0; k < waves.length; k++) {
             const wv = waves[k];
-            const fade = 1 - wv.life;
-
-            ctx.beginPath();
-            ctx.arc(wv.x, wv.y, wv.r, 0, Math.PI * 2);
-            ctx.lineWidth = 16 * fade + 2;
-            ctx.strokeStyle = 'rgba(124, 92, 255,' + (0.18 * fade) + ')';
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(wv.x, wv.y, wv.r, 0, Math.PI * 2);
-            ctx.lineWidth = 2.5 * fade + 0.5;
-            ctx.strokeStyle = 'rgba(255, 255, 255,' + (0.85 * fade) + ')';
-            ctx.stroke();
+            const dx = p.x - wv.x;
+            const dy = p.y - wv.y;
+            const d = Math.hypot(dx, dy) || 1;
+            const off = Math.abs(d - wv.r);
+            if (off < BAND) {
+              const force = (1 - off / BAND) * (1 - wv.life) * 2.2;
+              p.vx += (dx / d) * force;
+              p.vy += (dy / d) * force;
+            }
           }
 
-          requestAnimationFrame(frame);
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.96;
+          p.vy = p.vy * 0.96 - 0.01;
+          p.size += p.grow;
+          p.rot += p.vr;
+
+          const t = p.life / p.maxLife;
+          const a = p.alpha * (1 - t) * Math.min(1, p.life / 8);
+
+          ctx.save();
+          ctx.globalAlpha = a;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.drawImage(sprite, -p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
         }
-        frame();
-      })();
-    }
+
+        for (let k = 0; k < waves.length; k++) {
+          const wv = waves[k];
+          const fade = 1 - wv.life;
+
+          ctx.beginPath();
+          ctx.arc(wv.x, wv.y, wv.r, 0, Math.PI * 2);
+          ctx.lineWidth = 16 * fade + 2;
+          ctx.strokeStyle = 'rgba(124, 92, 255,' + (0.18 * fade) + ')';
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(wv.x, wv.y, wv.r, 0, Math.PI * 2);
+          ctx.lineWidth = 2.5 * fade + 0.5;
+          ctx.strokeStyle = 'rgba(255, 255, 255,' + (0.85 * fade) + ')';
+          ctx.stroke();
+        }
+
+        requestAnimationFrame(frame);
+      }
+      frame();
+    })();
   </script>
 </body>
 </html>
+    
