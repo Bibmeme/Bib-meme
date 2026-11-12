@@ -13,19 +13,12 @@
       var isApp = false;
       try {
         isApp =
-          // Capacitor
           !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) ||
-          // Cordova
           !!window.cordova ||
-          // Android TWA (APK, сделанный из сайта)
           (document.referrer || '').indexOf('android-app://') === 0 ||
-          // установленное PWA (ярлык на главном экране)
           (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
-          // iOS, добавленный на главный экран
           navigator.standalone === true ||
-          // метка в user agent, если делаете свой WebView
           /BibmemeApp/i.test(ua) ||
-          // ручное включение для проверки: ?app=1
           /[?&]app=1(&|$)/.test(location.search);
       } catch (e) {}
       if (isApp) document.documentElement.classList.add('is-app');
@@ -107,63 +100,109 @@
         var(--bg);
     }
 
-    /* матовое стекло только в приложении, в вебе простые карточки */
-    .is-app header,
     .is-app .features li {
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
 
-    header {
+    /* общий градиентный заголовок */
+    .title {
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--c1);
+      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ---------- первый экран ---------- */
+    .intro {
       position: relative;
       z-index: 1;
+      flex: 1;
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
-      margin: 16px;
-      padding: 12px 18px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
+      padding: 28px 20px 32px;
+      transition: opacity 0.6s ease;
     }
 
-    .logo {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--c1), var(--c2));
-      display: grid;
-      place-items: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 1.1rem;
+    .intro.hide { opacity: 0; pointer-events: none; }
+
+    .intro-title {
+      font-size: clamp(2.2rem, 10vw, 3.5rem);
+      animation: appear 1s ease both;
     }
 
-    .brand {
-      font-weight: 800;
-      font-size: 1.25rem;
+    .intro-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 520px;
+    }
+
+    .welcome {
+      margin: 0;
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      font-weight: 700;
       letter-spacing: -0.02em;
+      animation: appear 1.4s ease 0.4s both;
     }
 
-    main {
+    .welcome-desc {
+      margin: 14px 0 0;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: var(--muted);
+      animation: rise 1s ease 1.6s both;
+    }
+
+    .continue {
+      width: 100%;
+      max-width: 420px;
+      padding: 16px 20px;
+      border: 0;
+      border-radius: 16px;
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(124, 92, 255, 0.3);
+      animation: riseBottom 0.9s ease 2.8s both;
+    }
+
+    .continue:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    /* ---------- второй экран ---------- */
+    .home {
       position: relative;
       z-index: 1;
+      display: none;
       flex: 1;
       padding: 24px 16px;
       text-align: center;
     }
 
-    h1 {
-      margin: 0;
+    .home.show {
+      display: block;
+      animation: appear 0.8s ease both;
+    }
+
+    .home h1 {
       font-size: clamp(3rem, 14vw, 6rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      color: var(--c1); /* запасной цвет для старых браузеров */
-      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
     p.sub {
@@ -177,7 +216,7 @@
       z-index: 1;
       display: grid;
       gap: 12px;
-      margin: 16px;
+      margin: 64px 16px 16px;
       padding: 0;
       list-style: none;
     }
@@ -193,6 +232,7 @@
       font-size: 0.98rem;
       line-height: 1.35;
       font-weight: 500;
+      text-align: left;
     }
 
     .icon {
@@ -216,6 +256,22 @@
       stroke-linejoin: round;
     }
 
+    /* ---------- анимации ---------- */
+    @keyframes appear {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes riseBottom {
+      from { opacity: 0; transform: translateY(60px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     @media (min-width: 700px) {
       .features {
         grid-template-columns: repeat(2, 1fr);
@@ -235,68 +291,109 @@
   <div class="blob c"></div>
   <canvas id="smoke"></canvas>
 
-  <header>
-    <div class="logo">B</div>
-    <span class="brand">Bibmeme</span>
-  </header>
+  <!-- первый экран -->
+  <section class="intro" id="intro">
+    <h1 class="title intro-title">Bibmeme</h1>
 
-  <main>
-    <h1>Привет</h1>
+    <div class="intro-center">
+      <p class="welcome">Добро пожаловать</p>
+      <p class="welcome-desc">в Bibmeme вы можете сразу залетать в топ, смотреть тренды, общаться, лайкать, комментировать и найти друзей!</p>
+    </div>
+
+    <button class="continue" id="continueBtn" disabled>
+      Продолжить через <span id="count">5</span> секунд
+    </button>
+  </section>
+
+  <!-- второй экран -->
+  <main class="home" id="home">
+    <h1 class="title">Bibmeme</h1>
     <p class="sub">Добро пожаловать в Bibmeme</p>
+
+    <ul class="features">
+      <li>
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="7" width="17" height="10" rx="2"/>
+            <path d="M22 11v2"/>
+            <path d="M6 10v4M10 10v4M14 10v4"/>
+          </svg>
+        </span>
+        <span>Энергично смотрите и вдохновляйтесь новыми трендами</span>
+      </li>
+      <li>
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>
+          </svg>
+        </span>
+        <span>Быстрое и оформленное, ждать не нужно!</span>
+      </li>
+      <li>
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="11" width="16" height="10" rx="2"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+            <path d="M12 15v2"/>
+          </svg>
+        </span>
+        <span>Шифрование под защитой и контролем</span>
+      </li>
+      <li>
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+          </svg>
+        </span>
+        <span>Напоминание о том, что пора спать или сделать перерыв, чтобы не засидеться!</span>
+      </li>
+      <li>
+        <span class="icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="8" rx="2"/>
+            <rect x="3" y="13" width="18" height="8" rx="2"/>
+            <path d="M7 7h.01M7 17h.01"/>
+            <path d="M12 7h5M12 17h5"/>
+          </svg>
+        </span>
+        <span>Сервера под контролем и безопасные</span>
+      </li>
+    </ul>
   </main>
 
-  <ul class="features">
-    <li>
-      <span class="icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="2" y="7" width="17" height="10" rx="2"/>
-          <path d="M22 11v2"/>
-          <path d="M6 10v4M10 10v4M14 10v4"/>
-        </svg>
-      </span>
-      <span>Энергично смотрите и вдохновляйтесь новыми трендами</span>
-    </li>
-    <li>
-      <span class="icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>
-        </svg>
-      </span>
-      <span>Быстрое и оформленное, ждать не нужно!</span>
-    </li>
-    <li>
-      <span class="icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="4" y="11" width="16" height="10" rx="2"/>
-          <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
-          <path d="M12 15v2"/>
-        </svg>
-      </span>
-      <span>Шифрование под защитой и контролем</span>
-    </li>
-    <li>
-      <span class="icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
-        </svg>
-      </span>
-      <span>Напоминание о том, что пора спать или сделать перерыв, чтобы не засидеться!</span>
-    </li>
-    <li>
-      <span class="icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3" y="3" width="18" height="8" rx="2"/>
-          <rect x="3" y="13" width="18" height="8" rx="2"/>
-          <path d="M7 7h.01M7 17h.01"/>
-          <path d="M12 7h5M12 17h5"/>
-        </svg>
-      </span>
-      <span>Сервера под контролем и безопасные</span>
-    </li>
-  </ul>
-
   <script>
-    // живой фон запускается только в приложении
+    /* ---------- первый экран: отсчёт и переход ---------- */
+    (function () {
+      const intro = document.getElementById('intro');
+      const home = document.getElementById('home');
+      const btn = document.getElementById('continueBtn');
+      const countEl = document.getElementById('count');
+      let seconds = 5;
+
+      // отсчёт начинается, когда кнопка появилась (примерно через 2.8 секунды)
+      setTimeout(function () {
+        const timer = setInterval(function () {
+          seconds--;
+          countEl.textContent = seconds;
+          if (seconds <= 0) {
+            clearInterval(timer);
+            btn.textContent = 'Продолжить';
+            btn.disabled = false;
+          }
+        }, 1000);
+      }, 2800);
+
+      btn.addEventListener('click', function () {
+        if (btn.disabled) return;
+        intro.classList.add('hide');
+        setTimeout(function () {
+          intro.style.display = 'none';
+          home.classList.add('show');
+        }, 600);
+      });
+    })();
+
+    /* ---------- живой фон: только в приложении ---------- */
     if (document.documentElement.classList.contains('is-app')) {
       (function () {
         const canvas = document.getElementById('smoke');
@@ -328,6 +425,7 @@
         const particles = [];
         const waves = [];
         const MAX = 350;
+        const BAND = 60;
 
         function spawn(x, y, power) {
           if (reduceMotion) return;
@@ -395,8 +493,6 @@
           spawn(t.clientX, t.clientY, 1);
           spawn(t.clientX, t.clientY, 1);
         }, { passive: true });
-
-        const BAND = 60;
 
         function frame() {
           ctx.clearRect(0, 0, w, h);
