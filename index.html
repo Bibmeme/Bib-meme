@@ -275,7 +275,7 @@
 
     .intro .btn {
       max-width: 420px;
-      animation: riseBottom 0.9s ease 2.8s both;
+      animation: riseBottom 0.9s ease both;
     }
 
     /* ---------- главный экран ---------- */
@@ -378,9 +378,7 @@
       <p class="welcome-desc">в Bibmeme вы можете сразу залетать в топ, смотреть тренды, общаться, лайкать, комментировать и найти друзей!</p>
     </div>
 
-    <button class="btn" id="continueBtn" disabled>
-      Продолжить через <span id="count">5</span> секунд
-    </button>
+    <button class="btn" id="continueBtn" hidden>Продолжить</button>
   </section>
 
   <!-- главный экран -->
@@ -552,23 +550,12 @@
         b.addEventListener('click', () => show(b.dataset.go));
       });
 
-      /* ---------- первый экран: отсчёт 5 секунд ---------- */
-      let seconds = 5;
+      /* ---------- первый экран: кнопка появляется через 5 секунд ---------- */
       setTimeout(function () {
-        const t = setInterval(function () {
-          seconds--;
-          $('count').textContent = seconds;
-          if (seconds <= 0) {
-            clearInterval(t);
-            $('continueBtn').textContent = 'Продолжить';
-            $('continueBtn').disabled = false;
-          }
-        }, 1000);
-      }, 2800);
+        $('continueBtn').hidden = false;
+      }, 5000);
 
-      $('continueBtn').addEventListener('click', function () {
-        if (!this.disabled) show('home');
-      });
+      $('continueBtn').addEventListener('click', () => show('home'));
       $('startBtn').addEventListener('click', () => show('reg1'));
 
       /* ---------- юзернейм: транслит и проверка занятости ---------- */
@@ -677,7 +664,7 @@
           blocked: false
         };
 
-                if (ageOn(birth) < 6) {
+        if (ageOn(birth) < 6) {
           user.blocked = true;
           data.users[draft.username] = user;
           save();
@@ -694,7 +681,7 @@
       });
 
       /* ---------- вход ---------- */
-      $('loginForm').addEventListener('submit', function (e) {
+            $('loginForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const err = $('loginError');
         err.textContent = '';
