@@ -9,15 +9,48 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        *, body, p {
+        *, body, h1, p {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-            font-weight: 700 !important;
+        }
+
+        h1 {
+            font-weight: 800 !important;
+        }
+
+        p {
+            font-weight: 500 !important;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .smooth-title {
+            opacity: 0;
+            animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .smooth-desc {
+            opacity: 0;
+            animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
         }
     </style>
 </head>
-<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center m-0">
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center p-6 m-0 text-center">
 
-    <p class="text-sm text-gray-100">bibmeme</p>
+    <div class="max-w-sm">
+        <h1 class="smooth-title text-2xl text-white mb-3 tracking-tight">Здравствуйте!</h1>
+        <p class="smooth-desc text-sm text-gray-400 leading-relaxed">
+            Здесь вы начнете встречать мемы, тренды, общаться, делиться, лайкать и комментировать
+        </p>
+    </div>
 
 </body>
 </html>
